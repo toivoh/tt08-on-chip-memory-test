@@ -20,9 +20,9 @@ module tt_um_toivoh_on_chip_memory_test #( parameter ADDR_BITS=5, DATA_BITS=8 ) 
 
 
 //	rtl_array #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
-//	rtl_array2 #( .ADDR_BITS(ADDR_BITS) ) mem(
-//	rtl_array3 #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
-	rtl_array3b #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
+//	rtl_vector0 #( .ADDR_BITS(ADDR_BITS) ) mem(
+//	rtl_array2 #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
+	rtl_array2b #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
 		.clk(clk), .reset(reset),
 		.we(ui_in[7]),
 		.addr(ui_in[ADDR_BITS-1:0]),

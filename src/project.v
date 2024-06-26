@@ -16,8 +16,11 @@ module tt_um_toivoh_on_chip_memory_test #( parameter ADDR_BITS=5, DATA_BITS=8 ) 
 		input  wire       rst_n     // reset_n - low to reset
 	);
 
+	localparam BITS = 2**ADDR_BITS * DATA_BITS;
+
 	wire reset =!rst_n;
 
+	/*
 
 //	rtl_array #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
 //	rtl_vector0 #( .ADDR_BITS(ADDR_BITS) ) mem(
@@ -29,6 +32,19 @@ module tt_um_toivoh_on_chip_memory_test #( parameter ADDR_BITS=5, DATA_BITS=8 ) 
 		.wdata(uio_in),
 		.rdata(uo_out)
 	);
+
+	*/
+
+	wire data_out;
+	shift_register #( .BITS(BITS) ) sreg(
+		.clk(clk), .reset(reset),
+		.we(ui_in[7]),
+		.data_in(ui_in[0]),
+		.data_out(data_out)
+	);
+	assign uo_out = data_out;
+
+
 
 	assign uio_out = 0;
 	assign uio_oe  = 0;

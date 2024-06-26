@@ -127,7 +127,7 @@ endmodule
 
 
 
-module rtl_array3 #( parameter ADDR_BITS=5, DATA_BITS=8 ) (
+module rtl_array2 #( parameter ADDR_BITS=5, DATA_BITS=8 ) (
 		input wire clk, reset,
 
 		input wire we,
@@ -151,7 +151,7 @@ module rtl_array3 #( parameter ADDR_BITS=5, DATA_BITS=8 ) (
 	endgenerate
 endmodule
 
-module rtl_array3b #( parameter ADDR_BITS=5, DATA_BITS=8 ) (
+module rtl_array2b #( parameter ADDR_BITS=5, DATA_BITS=8 ) (
 		input wire clk, reset,
 
 		input wire we,
@@ -184,4 +184,40 @@ module rtl_array3b #( parameter ADDR_BITS=5, DATA_BITS=8 ) (
 			);
 		end
 	endgenerate
+endmodule
+
+
+
+module shift_register #( parameter BITS=256 ) (
+		input wire clk, reset,
+
+		input wire we,
+		input wire data_in,
+		output wire data_out
+	);
+
+	genvar i;
+
+	wire [BITS:0] data;
+	assign data[0] = data_in;
+	assign data_out = data[BITS];
+
+
+	wire gclk;
+	sky130_fd_sc_hd__dlclkp_4 clock_gate( .CLK(clk), .GATE(we), .GCLK(gclk) );
+	generate
+		for (i = 0; i < BITS; i++) begin
+			//sky130_fd_sc_hd__dfxtp_1 dff( .CLK(clk), .D(data[i]), .Q(data[i+1]) );
+			//sky130_fd_sc_hd__edfxtp_1 edff( .CLK(clk), .D(data[i]), .DE(we), .Q(data[i+1]) );
+			sky130_fd_sc_hd__dfxtp_1 dff( .CLK(gclk), .D(data[i]), .Q(data[i+1]) );
+
+			/*
+			wire q;
+			sky130_fd_sc_hd__dfxtp_1 dff( .CLK(clk), .D(data[i]), .Q(q) );
+			//sky130_fd_sc_hd__buf_1 buffer( .A(q), .X(data[i+1]) );
+			sky130_fd_sc_hd__clkbuf_1 buffer( .A(q), .X(data[i+1]) );
+			*/
+		end
+	endgenerate
+
 endmodule

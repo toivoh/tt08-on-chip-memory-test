@@ -153,6 +153,34 @@ module cg_dfxtp_vector #( parameter ADDR_BITS=5 ) (
 	assign rdata = data[addr];
 endmodule
 
+module cg_dlxtp_vector #( parameter ADDR_BITS=5 ) (
+		input wire [2**ADDR_BITS-1:0] gclk,
+		input wire reset,
+
+		input wire [ADDR_BITS-1:0] addr,
+		input wire wdata,
+		output wire rdata
+	);
+
+	localparam NUM = 2**ADDR_BITS;
+
+	genvar i;
+
+	// Memory array
+
+	wire [NUM-1:0] data;
+	generate
+		for (i = 0; i < NUM; i++) begin
+			sky130_fd_sc_hd__dlxtp_1 ff(
+				.GATE(gclk[i]), .D(wdata), .Q(data[i])
+			);
+		end
+	endgenerate
+
+	// Mux
+
+	assign rdata = data[addr];
+endmodule
 
 
 
@@ -203,10 +231,18 @@ module rtl_array2b #( parameter ADDR_BITS=5, DATA_BITS=8 ) (
 
 	generate
 		for (i = 0; i < DATA_BITS; i++) begin
+/*
 //			rtl_vector #( .ADDR_BITS(ADDR_BITS) ) mem(
 			edfxtp_vector #( .ADDR_BITS(ADDR_BITS) ) mem(
 				.clk(clk), .reset(reset),
 				.data_we(data_we),
+				.addr(addr),
+				.wdata(wdata[i]),
+				.rdata(rdata[i])
+			);
+*/
+			cg_dlxtp_vector #( .ADDR_BITS(ADDR_BITS) ) mem(
+				.gclk(data_we), .reset(reset),
 				.addr(addr),
 				.wdata(wdata[i]),
 				.rdata(rdata[i])
@@ -250,7 +286,8 @@ module rtl_array2c #( parameter ADDR_BITS=5, DATA_BITS=8 ) (
 
 	generate
 		for (i = 0; i < DATA_BITS; i++) begin
-			cg_dfxtp_vector #( .ADDR_BITS(ADDR_BITS) ) mem(
+			//cg_dfxtp_vector #( .ADDR_BITS(ADDR_BITS) ) mem(
+			cg_dlxtp_vector #( .ADDR_BITS(ADDR_BITS) ) mem(
 				.gclk(gclk), .reset(reset),
 				.addr(addr),
 				.wdata(wdata[i]),
@@ -284,6 +321,11 @@ module shift_register #( parameter BITS=256 ) (
 			//sky130_fd_sc_hd__dfxtp_1 dff( .CLK(clk), .D(data[i]), .Q(data[i+1]) );
 			//sky130_fd_sc_hd__edfxtp_1 edff( .CLK(clk), .D(data[i]), .DE(we), .Q(data[i+1]) );
 			sky130_fd_sc_hd__dfxtp_1 dff( .CLK(gclk), .D(data[i]), .Q(data[i+1]) );
+
+			// sky130_fd_sc_hd__dlxtp_1 latch( .GATE(gclk), .D(data[i]), .Q(data[i+1]) ); // nonsense, but maybe it gives us some kind of area estimate anyway. Gives setup problems in typical corner
+
+			//if (i&1) sky130_fd_sc_hd__dlxtp_1 latch( .GATE(gclk), .D(data[i]), .Q(data[i+1]) ); // gives setup problems in typical corner
+			//else sky130_fd_sc_hd__dfxtp_1 dff( .CLK(gclk), .D(data[i]), .Q(data[i+1]) );
 
 			/*
 			wire q;

@@ -20,12 +20,13 @@ module tt_um_toivoh_on_chip_memory_test #( parameter ADDR_BITS=5, DATA_BITS=8 ) 
 
 	wire reset =!rst_n;
 
-	/*
+
 
 //	rtl_array #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
 //	rtl_vector0 #( .ADDR_BITS(ADDR_BITS) ) mem(
 //	rtl_array2 #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
-	rtl_array2b #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
+//	rtl_array2b #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
+	rtl_array2c #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
 		.clk(clk), .reset(reset),
 		.we(ui_in[7]),
 		.addr(ui_in[ADDR_BITS-1:0]),
@@ -33,7 +34,7 @@ module tt_um_toivoh_on_chip_memory_test #( parameter ADDR_BITS=5, DATA_BITS=8 ) 
 		.rdata(uo_out)
 	);
 
-	*/
+	/*
 
 	wire data_out;
 	shift_register #( .BITS(BITS) ) sreg(
@@ -44,6 +45,7 @@ module tt_um_toivoh_on_chip_memory_test #( parameter ADDR_BITS=5, DATA_BITS=8 ) 
 	);
 	assign uo_out = data_out;
 
+	*/
 
 
 	assign uio_out = 0;

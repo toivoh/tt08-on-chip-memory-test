@@ -154,6 +154,41 @@ module cg_dfxtp_vector #( parameter ADDR_BITS=5 ) (
 	assign rdata = data[addr];
 endmodule
 
+module cg_dfxtp_sreg_vector #( parameter ADDR_BITS=4, SERIAL_BITS=2 ) (
+		input wire clk,
+		input wire [2**ADDR_BITS-1:0] gclk,
+		input wire reset,
+
+		input wire [ADDR_BITS-1:0] addr,
+		input wire wdata,
+		output wire rdata
+	);
+
+	localparam NUM = 2**ADDR_BITS;
+
+	genvar i, j;
+
+	// Memory array
+
+	wire [NUM-1:0] data;
+	generate
+		for (i = 0; i < NUM; i++) begin
+			wire [SERIAL_BITS:0] sdata;
+			assign sdata[0] = wdata;
+			assign data[i] = sdata[SERIAL_BITS];
+			for (j = 0; j < SERIAL_BITS; j++) begin
+				sky130_fd_sc_hd__dfxtp_1 ff(
+					.CLK(gclk[i]), .D(sdata[j]), .Q(sdata[j+1])
+				);
+			end
+		end
+	endgenerate
+
+	// Mux
+
+	assign rdata = data[addr];
+endmodule
+
 module cg_dlxtp_vector #( parameter ADDR_BITS=5 ) (
 		input wire clk,
 		input wire [2**ADDR_BITS-1:0] gclk,
@@ -256,7 +291,7 @@ module rtl_array2b #( parameter ADDR_BITS=5, DATA_BITS=8 ) (
 endmodule
 
 
-module rtl_array2c #( parameter ADDR_BITS=5, DATA_BITS=8 ) (
+module rtl_array2c #( parameter ADDR_BITS=5, DATA_BITS=8, SERIAL_BITS=1 ) (
 		input wire clk, reset,
 
 		input wire we,
@@ -291,7 +326,8 @@ module rtl_array2c #( parameter ADDR_BITS=5, DATA_BITS=8 ) (
 	generate
 		for (i = 0; i < DATA_BITS; i++) begin
 			//cg_dfxtp_vector #( .ADDR_BITS(ADDR_BITS) ) mem(
-			cg_dlxtp_vector #( .ADDR_BITS(ADDR_BITS) ) mem(
+			//cg_dlxtp_vector #( .ADDR_BITS(ADDR_BITS) ) mem(
+			cg_dfxtp_sreg_vector #( .ADDR_BITS(ADDR_BITS), .SERIAL_BITS(SERIAL_BITS) ) mem(
 				.clk(clk),
 				.gclk(gclk), .reset(reset),
 				.addr(addr),

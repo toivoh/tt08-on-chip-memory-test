@@ -5,7 +5,13 @@
 
 `default_nettype none
 
-module tt_um_toivoh_on_chip_memory_test #( parameter ADDR_BITS=5, DATA_BITS=8 ) (
+module tt_um_toivoh_on_chip_memory_test #(
+		parameter ADDR_BITS=5, DATA_BITS=8, SERIAL_BITS=1
+		//parameter ADDR_BITS=5, DATA_BITS=1, SERIAL_BITS=8
+		//parameter ADDR_BITS=3, DATA_BITS=1, SERIAL_BITS=32
+		//parameter ADDR_BITS=5, DATA_BITS=2, SERIAL_BITS=4
+		//parameter ADDR_BITS=5, DATA_BITS=4, SERIAL_BITS=2
+	) (
 		input  wire [7:0] ui_in,    // Dedicated inputs
 		output wire [7:0] uo_out,   // Dedicated outputs
 		input  wire [7:0] uio_in,   // IOs: Input path
@@ -36,7 +42,7 @@ module tt_um_toivoh_on_chip_memory_test #( parameter ADDR_BITS=5, DATA_BITS=8 ) 
 //	rtl_vector0 #( .ADDR_BITS(ADDR_BITS) ) mem(
 //	rtl_array2 #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
 //	rtl_array2b #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
-	rtl_array2c #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
+	rtl_array2c #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS), .SERIAL_BITS(SERIAL_BITS) ) mem(
 		.clk(clk), .reset(reset),
 		.we(ui_in[7]),
 

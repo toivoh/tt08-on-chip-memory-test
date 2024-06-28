@@ -88,7 +88,8 @@ module tt_um_toivoh_on_chip_memory_test #( parameter ADDR_BITS=5, DATA_BITS=8 ) 
 	wire gclk;
 	wire rdata;
 	sky130_fd_sc_hd__dlclkp_1 clock_gate( .CLK(clk), .GATE(we), .GCLK(gclk) );
-	sky130_fd_sc_hd__dlxtp_1 latch( .GATE(gclk), .D(wdata), .Q(rdata));
+	//sky130_fd_sc_hd__dlxtp_1 latch( .GATE(gclk), .D(wdata), .Q(rdata));
+	sky130_fd_sc_hd__dlxtn_1 latch( .GATE_N(gclk), .D(wdata), .Q(rdata));
 	assign uo_out0 = rdata;
 	*/
 

@@ -325,12 +325,11 @@ module shift_register #( parameter BITS=256 ) (
 		for (i = 0; i < BITS; i++) begin
 			//sky130_fd_sc_hd__dfxtp_1 dff( .CLK(clk), .D(data[i]), .Q(data[i+1]) );
 			//sky130_fd_sc_hd__edfxtp_1 edff( .CLK(clk), .D(data[i]), .DE(we), .Q(data[i+1]) );
-			sky130_fd_sc_hd__dfxtp_1 dff( .CLK(gclk), .D(data[i]), .Q(data[i+1]) );
+			//sky130_fd_sc_hd__dfxtp_1 dff( .CLK(gclk), .D(data[i]), .Q(data[i+1]) );
 
-			// sky130_fd_sc_hd__dlxtp_1 latch( .GATE(gclk), .D(data[i]), .Q(data[i+1]) ); // nonsense, but maybe it gives us some kind of area estimate anyway. Gives setup problems in typical corner
-
-			//if (i&1) sky130_fd_sc_hd__dlxtp_1 latch( .GATE(gclk), .D(data[i]), .Q(data[i+1]) ); // gives setup problems in typical corner
-			//else sky130_fd_sc_hd__dfxtp_1 dff( .CLK(gclk), .D(data[i]), .Q(data[i+1]) );
+			// n-latch feeding p-latch avoids setup timing problems
+			if (i&1) sky130_fd_sc_hd__dlxtp_1 latch(   .GATE(gclk),   .D(data[i]), .Q(data[i+1]) );
+			else     sky130_fd_sc_hd__dlxtn_1 latch_n( .GATE_N(gclk), .D(data[i]), .Q(data[i+1]) );
 
 			/*
 			wire q;

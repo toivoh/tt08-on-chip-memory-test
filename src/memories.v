@@ -125,6 +125,7 @@ module edfxtp_vector #( parameter ADDR_BITS=5 ) (
 endmodule
 
 module cg_dfxtp_vector #( parameter ADDR_BITS=5 ) (
+		input wire clk,
 		input wire [2**ADDR_BITS-1:0] gclk,
 		input wire reset,
 
@@ -154,6 +155,7 @@ module cg_dfxtp_vector #( parameter ADDR_BITS=5 ) (
 endmodule
 
 module cg_dlxtp_vector #( parameter ADDR_BITS=5 ) (
+		input wire clk,
 		input wire [2**ADDR_BITS-1:0] gclk,
 		input wire reset,
 
@@ -167,12 +169,14 @@ module cg_dlxtp_vector #( parameter ADDR_BITS=5 ) (
 	genvar i;
 
 	// Memory array
+	wire wdata2;
+	sky130_fd_sc_hd__dlxtn_1 nlatch( .GATE_N(clk), .D(wdata), .Q(wdata2));
 
 	wire [NUM-1:0] data;
 	generate
 		for (i = 0; i < NUM; i++) begin
 			sky130_fd_sc_hd__dlxtp_1 ff(
-				.GATE(gclk[i]), .D(wdata), .Q(data[i])
+				.GATE(gclk[i]), .D(wdata2), .Q(data[i])
 			);
 		end
 	endgenerate
@@ -288,6 +292,7 @@ module rtl_array2c #( parameter ADDR_BITS=5, DATA_BITS=8 ) (
 		for (i = 0; i < DATA_BITS; i++) begin
 			//cg_dfxtp_vector #( .ADDR_BITS(ADDR_BITS) ) mem(
 			cg_dlxtp_vector #( .ADDR_BITS(ADDR_BITS) ) mem(
+				.clk(clk),
 				.gclk(gclk), .reset(reset),
 				.addr(addr),
 				.wdata(wdata[i]),

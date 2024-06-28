@@ -35,18 +35,13 @@ module tt_um_toivoh_on_chip_memory_test #( parameter ADDR_BITS=5, DATA_BITS=8 ) 
 //	rtl_array #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
 //	rtl_vector0 #( .ADDR_BITS(ADDR_BITS) ) mem(
 //	rtl_array2 #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
-	rtl_array2b #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
-//	rtl_array2c #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
+//	rtl_array2b #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
+	rtl_array2c #( .ADDR_BITS(ADDR_BITS), .DATA_BITS(DATA_BITS) ) mem(
 		.clk(clk), .reset(reset),
 		.we(ui_in[7]),
-		.addr(ui_in[ADDR_BITS-1:0]),
-		.wdata(uio_in),
-		.rdata(uo_out)
-		/*
-		.addr(ui_in_reg[ADDR_BITS-1:0]),
-		.wdata(uio_in_reg),
-		.rdata(uo_out0)
-		*/
+
+		.addr(ui_in[ADDR_BITS-1:0]), .wdata(uio_in), .rdata(uo_out)
+		//.addr(ui_in_reg[ADDR_BITS-1:0]), .wdata(uio_in_reg), .rdata(uo_out0)
 	);
 
 	/*
@@ -60,6 +55,41 @@ module tt_um_toivoh_on_chip_memory_test #( parameter ADDR_BITS=5, DATA_BITS=8 ) 
 	);
 	assign uo_out = data_out;
 
+	*/
+
+	/*
+	// Simple ICG + latch test
+	wire we = ui_in[7];
+	wire wdata = ui_in[0];
+	wire gclk;
+	wire rdata;
+	//sky130_fd_sc_hd__dlclkp_1 clock_gate( .CLK(clk), .GATE(we), .GCLK(gclk) );
+	//sky130_fd_sc_hd__dlxtp_1 latch( .GATE(gclk), .D(wdata), .Q(rdata));
+	sky130_fd_sc_hd__dlxtn_1 nlatch( .GATE_N(clk), .D(wdata), .Q(rdata));
+	assign uo_out = rdata;
+	//wire rdata2;
+	//sky130_fd_sc_hd__dlxtp_1 platch( .GATE(clk), .D(rdata), .Q(rdata2));
+	//assign uo_out = rdata2;
+	*/
+
+
+	/*
+	wire [7:0] uo_out0;
+	reg [7:0] ui_in_reg, uo_out_reg;
+	always @(posedge clk) begin
+		ui_in_reg <= ui_in;
+		uo_out_reg <= uo_out0;
+	end
+	assign uo_out = uo_out_reg;
+
+	// Simple ICG + latch test
+	wire we = ui_in_reg[7];
+	wire wdata = ui_in_reg[0];
+	wire gclk;
+	wire rdata;
+	sky130_fd_sc_hd__dlclkp_1 clock_gate( .CLK(clk), .GATE(we), .GCLK(gclk) );
+	sky130_fd_sc_hd__dlxtp_1 latch( .GATE(gclk), .D(wdata), .Q(rdata));
+	assign uo_out0 = rdata;
 	*/
 
 

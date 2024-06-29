@@ -322,3 +322,36 @@ o21ba           1
 or3             1
 Total 688
 
+
+# dlxtn(pre) -> dlxtp CG array 32 x 8 x 1
+
+[INFO GPL-0019] Util(%): 43.35
+        "timing__setup__ws": 5.522484,
+        "timing__hold__ws": 0.197709,
+Max slew violation: 0.248241
+
+dlxtp           256
+clkbuf          155
+mux4            64
+buf             45
+and3            32
+dlclkp          32
+diode           19
+a22o            16
+conb            16
+dlygate4sd3     10
+a221o           9
+a21o            8
+dlxtn           8
+o21a            6
+and2            5
+dlymetal6s2s    5
+nor2            4
+and2b           4
+a211o           3
+a21oi           3
+or2             2
+inv             1
+o21ba           1
+or3             1
+Total 705

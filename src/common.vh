@@ -21,7 +21,8 @@
 
 //`define ELEMENT_DFXTP     // flip-flop with external mux for enable
 //`define ELEMENT_EDFXTP  // flip-flop with enable
-`define ELEMENT_DFXTP_CG  // flip-flop with external clock gate
+//`define ELEMENT_DFXTP_CG  // flip-flop with external clock gate
+`define ELEMENT_DLXTNP_CG  // dlxtp latch with external clock gate, fed by dlxtn latch
 
 // Misc options
 // ============

@@ -132,6 +132,13 @@ module memory #( parameter ADDR_BITS = `ADDR_BITS, DATA_BITS = `DATA_BITS, SERIA
 	wire [DATA_BITS-1:0] all_data[NUM_ADDR];
 
 	generate
+`ifdef ELEMENT_DLXTNP_CG
+		wire [DATA_BITS-1:0] wdata2;
+		for (i = 0; i < DATA_BITS; i++) begin
+			sky130_fd_sc_hd__dlxtn_1 n_latch( .GATE_N(clk), .D(wdata[i]), .Q(wdata2[i]));
+		end
+`endif
+
 		for (j = 0; j < NUM_ADDR; j++) begin
 			for (i = 0; i < DATA_BITS; i++) begin
 `ifdef ELEMENT_DFXTP
@@ -142,6 +149,9 @@ module memory #( parameter ADDR_BITS = `ADDR_BITS, DATA_BITS = `DATA_BITS, SERIA
 `endif
 `ifdef ELEMENT_DFXTP_CG
 				sky130_fd_sc_hd__dfxtp_1 dff(.CLK(gclk[j]), .D(wdata[i]), .Q(data[j][i]));
+`endif
+`ifdef ELEMENT_DLXTNP_CG
+				sky130_fd_sc_hd__dlxtp_1 dff(.GATE(gclk[j]), .D(wdata2[i]), .Q(data[j][i]));
 `endif
 			end
 			assign all_data[j] = data[j];

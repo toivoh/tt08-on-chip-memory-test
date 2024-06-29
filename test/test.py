@@ -34,28 +34,40 @@ async def test_project(dut):
 	print("DATA_BITS =", DATA_BITS);
 	print("SERIAL_BITS =", SERIAL_BITS);
 
-	data = [randrange(NUM_CODES) for i in range(NUM_ADDR)]
+	data = [[randrange(NUM_CODES) for j in range(SERIAL_BITS)] for i in range(NUM_ADDR)]
+	#data = [[i*SERIAL_BITS+j for j in range(SERIAL_BITS)] for i in range(NUM_ADDR)]
 	#print("data =", data)
 
 	# Write data into the memory in random order
 	order = sample(range(NUM_ADDR), NUM_ADDR)
+	#order = range(NUM_ADDR)
 	#print("write order =", order)
 	for addr in order:
-		dut.ui_in.value = addr | 128 # set addr, we = 1
-		dut.uio_in.value = data[addr]
+		for i in range(SERIAL_BITS):
+			dut.ui_in.value = addr | 128 # set addr, we = 1
+			dut.uio_in.value = data[addr][i]
 
-		await ClockCycles(dut.clk, 1)
+			await ClockCycles(dut.clk, 1)
+
+		if False:
+			print(f"addr = {addr}, i = {i}")
+			all_data = dut.user_project.mem.all_data
+			#ad = [[str(all_data[j][i].value) for i in range(SERIAL_BITS)] for j in range(NUM_ADDR)]
+			ad = [[str(all_data[j*SERIAL_BITS+i].value) for i in range(SERIAL_BITS)] for j in range(NUM_ADDR)]
+			print("all_data =", ad)
+
 
 	# Read data in random order
 	order = sample(range(NUM_ADDR), NUM_ADDR)
 	#print("read order =", order)
 	for addr in order:
-		dut.ui_in.value = addr # set addr, we = 0
+		for i in range(SERIAL_BITS):
+			dut.ui_in.value = addr # set addr, we = 0
 
-		await ClockCycles(dut.clk, 1)
+			await ClockCycles(dut.clk, 1)
 
-		rdata = dut.uo_out.value.to_unsigned()
-		assert rdata == data[addr]
-		#print((rdata, data[addr]))
+			rdata = dut.uo_out.value.to_unsigned()
+			assert rdata == data[addr][i]
+			#print((rdata, data[addr][i]))
 
 	print("\nMemory test succesful!")

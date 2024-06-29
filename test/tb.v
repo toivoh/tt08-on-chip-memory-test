@@ -48,4 +48,12 @@ module tb ();
 	localparam DATA_BITS = `DATA_BITS;
 	localparam SERIAL_BITS = `SERIAL_BITS;
 
+	/*
+	// For debugging
+	wire [`DATA_BITS-1:0] data0 = user_project.mem.all_data[0];
+	wire [`DATA_BITS-1:0] data1 = user_project.mem.all_data[1];
+	wire [`DATA_BITS-1:0] data2 = user_project.mem.all_data[2];
+	wire [`DATA_BITS-1:0] data3 = user_project.mem.all_data[3];
+	*/
+
 endmodule

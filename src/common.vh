@@ -6,3 +6,10 @@
 `define ADDR_BITS 5
 `define DATA_BITS 8
 `define SERIAL_BITS 1
+
+
+// Choose top memory structure
+// ===========================
+
+//`define TOP_RTL_ARRAY  // not valid when SERIAL_BITS != 1
+`define TOP_RTL_SREG_ARRAY

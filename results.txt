@@ -24,3 +24,203 @@ dlymetal6s2s    2
 nor2            1
 nor3            1
 Total 1040
+
+
+# RTL array 32 x 4 x 2
+
+[INFO GPL-0019] Util(%): 55.72
+        "timing__setup__ws": 5.68288,
+        "timing__hold__ws": 0.308987,
+Max slew violation: 0.716233
+
+dfxtp           256
+dlygate4sd3     256
+mux2            128
+and3            60
+clkbuf          48
+and3b           45
+buf             39
+or4             24
+conb            20
+a2111o          13
+and2            12
+nand2           9
+and4bb          6
+nand3b          6
+inv             5
+and2b           5
+nor4b           4
+and4b           4
+a21oi           4
+o22a            4
+dlymetal6s2s    4
+diode           3
+a211o           2
+a221o           2
+and4            1
+or2             1
+or3b            1
+nor2            1
+Total 963
+
+
+# RTL array 32 x 2 x 4
+
+[INFO GPL-0019] Util(%): 47.15
+        "timing__setup__ws": 6.04082,
+        "timing__hold__ws": 0.301971,
+Max slew violation: 0.175002
+
+dfxtp           256
+dlygate4sd3     256
+mux2            64
+buf             39
+and3            29
+clkbuf          28
+and3b           26
+conb            22
+or4             12
+nand2           11
+nor2            9
+and2            7
+a2111o          7
+and4bb          6
+nand3b          5
+dlymetal6s2s    5
+and4b           4
+nor4b           4
+or4b            4
+diode           3
+inv             2
+a21oi           2
+o22a            2
+and4            1
+and2b           1
+or2             1
+or3b            1
+a221o           1
+a311o           1
+Total 809
+
+
+# RTL array 32 x 1 x 8
+
+[INFO GPL-0019] Util(%): 41.99
+        "timing__setup__ws": 6.543808,
+        "timing__hold__ws": 0.267975,
+Max slew violation: 0
+
+dfxtp           256
+dlygate4sd3     256
+mux2            32
+clkbuf          30
+buf             27
+conb            23
+nand2           19
+nor2            12
+and3            11
+inv             9
+or2             8
+a22o            6
+and4b           4
+or4b            4
+dlymetal6s2s    4
+and2            3
+and4bb          3
+or4bb           3
+or4             3
+diode           3
+a2111o          2
+o31a            2
+and4            1
+a221o           1
+o2bb2a          1
+o22a            1
+nand3b          1
+a311o           1
+a31o            1
+or3             1
+Total 728
+
+
+# RTL array 16 x 1 x 16
+
+[INFO GPL-0019] Util(%): 38.64
+        "timing__setup__ws": 7.47378,
+        "timing__hold__ws": 0.190941,
+Max slew violation: 0.308630
+
+dfxtp           256
+dlygate4sd3     255
+buf             27
+clkbuf          26
+conb            23
+mux2            16
+nand2           11
+and3            6
+a32o            5
+and4b           4
+and4bb          4
+and2b           3
+a22o            3
+and2            2
+nor2            2
+or4             2
+and4            1
+nor4b           1
+o22a            1
+dlymetal6s2s    1
+diode           1
+Total 650
+
+
+# RTL array 8 x 1 x 32
+
+[INFO GPL-0019] Util(%): 36.59
+        "timing__setup__ws": 8.436717,
+        "timing__hold__ws": 0.197195,
+Max slew violation: 0
+
+dfxtp           256
+dlygate4sd3     255
+buf             24
+conb            23
+clkbuf          15
+mux2            8
+and3            5
+dlymetal6s2s    4
+diode           4
+and4            2
+and2b           2
+nand3           2
+a221o           2
+a211o           2
+inv             1
+nor2            1
+or4b            1
+and2            1
+Total 608
+
+
+# RTL array 2 x 1 x 128
+
+[INFO GPL-0019] Util(%): 35.35
+        "timing__setup__ws": 9.761999,
+        "timing__hold__ws": 0.268943,
+Max slew violation: 0.038955
+
+dfxtp           256
+dlygate4sd3     256
+buf             25
+conb            23
+clkbuf          16
+diode           6
+a21boi          1
+nand2           1
+a31o            1
+nand2b          1
+a2bb2o          1
+mux2            1
+Total 588
+
+

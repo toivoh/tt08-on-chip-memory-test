@@ -226,99 +226,99 @@ Total 588
 
 # dfxtp array 32 x 8 x 1
 
-[INFO GPL-0019] Util(%): 67.85
-        "timing__setup__ws": 3.871903,
-        "timing__hold__ws": 0.41137,
-Max slew violation: 0.036470
+[INFO GPL-0019] Util(%): 65.48
+        "timing__setup__ws": 5.763314,
+        "timing__hold__ws": 0.412499,
+Max slew violation: 0.492818
 
 mux2            256
 dfxtp           256
 dlygate4sd3     256
-and3            151
-clkbuf          62
-buf             56
-a2111o          36
-a221o           24
-or4             21
+mux4            64
+buf             64
+clkbuf          42
 a22o            16
 conb            16
-and2            14
-o32a            8
-nand2           7
-dlymetal6s2s    7
-and4bb          6
-and4b           5
-nor4b           4
-nand3           4
-nor2            2
+and3            15
+or3             15
+diode           12
+a221o           11
+dlymetal6s2s    10
+a21o            6
+and2            4
+nand2           4
+and2b           4
+nand2b          4
+o21a            4
+nor2            3
+o22a            3
+a21oi           3
+or4             2
+or2             2
 inv             1
 and4            1
-and2b           1
-or2             1
-diode           1
-Total 1212
-
+a211o           1
+Total 1075
 
 # edfxtp array 32 x 8 x 1
 
-[INFO GPL-0019] Util(%): 65.79
-        "timing__setup__ws": 4.306793,
-        "timing__hold__ws": 3.397784,
+[INFO GPL-0019] Util(%): 63.22
+        "timing__setup__ws": 6.836035,
+        "timing__hold__ws": 3.623005,
 Max slew violation: 0
 
 edfxtp          256
-and3            156
-clkbuf          76
-buf             48
-a2111o          40
-a221o           23
-or4             17
-and2            16
+buf             69
+mux4            64
+clkbuf          45
+and3            32
+a22o            16
 conb            16
-a22o            15
-o32a            8
-dlymetal6s2s    8
-and4bb          6
-and4b           5
-nor4b           4
-nor2            2
+a221o           9
+a21o            8
+o21a            6
+dlymetal6s2s    6
+and2            5
+nor2            4
+and2b           4
+a211o           3
+a21oi           3
 or2             2
-a32o            2
 inv             1
-and4            1
-and2b           1
-Total 703
+o21ba           1
+or3             1
+diode           1
+Total 552
 
 
 # dfxtp CG array 32 x 8 x 1
 
-[INFO GPL-0019] Util(%): 53.21
-        "timing__setup__ws": 4.182792,
-        "timing__hold__ws": 2.871019,
-Max slew violation: 0.134015
+[INFO GPL-0019] Util(%): 50.65
+        "timing__setup__ws": 5.695277,
+        "timing__hold__ws": 2.838394,
+Max slew violation: 0.285762
 
 dfxtp           256
-clkbuf          179
-and3            156
-a2111o          40
-buf             33
+clkbuf          150
+mux4            64
+buf             50
+and3            32
 dlclkp          32
-a221o           23
-or4             17
-and2            16
+diode           19
+a22o            16
 conb            16
-a22o            15
-o32a            8
-and4bb          6
-and4b           5
-dlymetal6s2s    5
-nor4b           4
-diode           4
-nor2            2
+a221o           9
+a21o            8
+o21a            6
+dlymetal6s2s    6
+and2            5
+nor2            4
+and2b           4
+a211o           3
+a21oi           3
 or2             2
-a32o            2
 inv             1
-and4            1
-and2b           1
-Total 824
+o21ba           1
+or3             1
+Total 688
 

@@ -19,10 +19,13 @@
 // Choose memory element for non-RTL array
 // =======================================
 
-//`define ELEMENT_DFXTP     // flip-flop with external mux for enable
-//`define ELEMENT_EDFXTP  // flip-flop with enable
-//`define ELEMENT_DFXTP_CG  // flip-flop with external clock gate
-`define ELEMENT_DLXTNP_CG  // dlxtp latch with external clock gate, fed by dlxtn latch
+//`define ELEMENT_DFXTP       	// flip-flop with external mux for enable
+//`define ELEMENT_EDFXTP      	// flip-flop with enable
+//`define ELEMENT_DFXTP_CG    	// flip-flop with external clock gate
+//`define ELEMENT_DLXTNP_CG   	// dlxtp latch with external clock gate, fed by dlxtn latch
+
+// Confuses timing analysis, must keep address and data stable one cycle after write and address one before too:
+`define ELEMENT_DLXTP       	// dlxtp latch with write enable directly on the gate
 
 // Misc options
 // ============

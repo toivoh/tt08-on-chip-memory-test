@@ -151,7 +151,10 @@ module memory #( parameter ADDR_BITS = `ADDR_BITS, DATA_BITS = `DATA_BITS, SERIA
 				sky130_fd_sc_hd__dfxtp_1 dff(.CLK(gclk[j]), .D(wdata[i]), .Q(data[j][i]));
 `endif
 `ifdef ELEMENT_DLXTNP_CG
-				sky130_fd_sc_hd__dlxtp_1 dff(.GATE(gclk[j]), .D(wdata2[i]), .Q(data[j][i]));
+				sky130_fd_sc_hd__dlxtp_1 p_latch(.GATE(gclk[j]), .D(wdata2[i]), .Q(data[j][i]));
+`endif
+`ifdef ELEMENT_DLXTP
+				sky130_fd_sc_hd__dlxtp_1 p_latch(.GATE(data_we[j]), .D(wdata[i]), .Q(data[j][i]));
 `endif
 			end
 			assign all_data[j] = data[j];

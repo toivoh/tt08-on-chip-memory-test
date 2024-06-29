@@ -355,3 +355,34 @@ inv             1
 o21ba           1
 or3             1
 Total 705
+
+
+# dlxtp array 32 x 8 x 1
+
+[INFO GPL-0019] Util(%): 39.08
+        "timing__setup__ws": 6.977775??,
+        "timing__hold__ws": 8.132548??,
+Max slew violation: 0??
+
+dlxtp           256
+mux4            64
+buf             51
+clkbuf          48
+and3            32
+a22o            16
+conb            16
+a221o           9
+a21o            8
+o21a            6
+and2            5
+dlymetal6s2s    5
+nor2            4
+and2b           4
+a211o           3
+a21oi           3
+or2             2
+inv             1
+o21ba           1
+or3             1
+Total 535
+

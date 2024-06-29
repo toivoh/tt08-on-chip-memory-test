@@ -72,7 +72,7 @@ async def test_project(dut):
 	#print("read order =", order)
 	for addr in order:
 		for i in range(SERIAL_BITS):
-			dut.ui_in.value = addr # set addr, we = 0
+			dut.ui_in.value = addr | 64 # set addr, we = 0, shift_enable = 1
 
 			await ClockCycles(dut.clk, 1)
 

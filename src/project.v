@@ -125,6 +125,7 @@ module tt_um_toivoh_on_chip_memory_test #( parameter ADDR_BITS = `ADDR_BITS, DAT
 	memory mem(
 		.clk(clk),
 		.we(ui_in[7]),
+		.shift_enable(ui_in[6]),
 		.addr(ui_in[ADDR_BITS-1:0]),
 		.wdata(uio_in[DATA_BITS-1:0]),
 		.rdata(rdata)

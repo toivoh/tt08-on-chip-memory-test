@@ -49,7 +49,7 @@ endmodule
 module memory #( parameter ADDR_BITS = `ADDR_BITS, DATA_BITS = `DATA_BITS, SERIAL_BITS = `SERIAL_BITS ) (
 		input wire clk,
 
-		input wire we,
+		input wire we, shift_enable,
 		input wire [ADDR_BITS-1:0] addr,
 		input wire [DATA_BITS-1:0] wdata,
 		output wire [DATA_BITS-1:0] rdata
@@ -174,5 +174,69 @@ module memory #( parameter ADDR_BITS = `ADDR_BITS, DATA_BITS = `DATA_BITS, SERIA
 		end
 	endgenerate
 `endif
+
+
+// Array of shift registers
+// ========================
+`ifdef TOP_SREG_ARRAY
+	genvar k;
+
+	wire se = we || shift_enable;
+	wire [DATA_BITS-1:0] wdata2 = we ? wdata : rdata; // recirculate (write back) output data if not writing
+
+	// Demux
+	// -----
+	wire [NUM_ADDR-1:0] data_we;
+	wire [NUM_ADDR-1:0] gclk;
+	generate
+		for (j = 0; j < NUM_ADDR; j++) begin
+			assign data_we[j] = (addr == j) && se;
+
+			`ifndef BUFFER_CLOCK_GATE
+			sky130_fd_sc_hd__dlclkp_1 clock_gate( .CLK(clk), .GATE(data_we[j]), .GCLK(gclk[j]) );
+			`else
+			// Reduces the number of clock buffers, but still seems to increase the utilization:
+			wire _gclk;
+			sky130_fd_sc_hd__dlclkp_1 clock_gate( .CLK(clk), .GATE(data_we[j]), .GCLK(_gclk) );
+			sky130_fd_sc_hd__clkbuf_4 clock_buffer( .A(_gclk), .X(gclk[j]) );
+			`endif
+		end
+	endgenerate
+
+	// Memory array
+	// ------------
+	wire [DATA_BITS-1:0] data_out[NUM_ADDR];
+	wire [DATA_BITS-1:0] all_data[NUM_ADDR*SERIAL_BITS];
+
+	generate
+		for (j = 0; j < NUM_ADDR; j++) begin
+			for (i = 0; i < DATA_BITS; i++) begin
+				wire [SERIAL_BITS:0] sdata;
+				assign sdata[0] = wdata[i];
+
+				assign data_out[j][i] = sdata[SERIAL_BITS];
+				for (k = 0; k < SERIAL_BITS; k++) begin
+					sky130_fd_sc_hd__dfxtp_1 dff( .CLK(gclk[j]), .D(sdata[k]), .Q(sdata[k+1]) );
+
+					assign all_data[j*SERIAL_BITS+k][i] = sdata[k+1];
+				end
+			end
+		end
+	endgenerate
+
+	// Mux
+	// ---
+	//assign rdata = data[addr];
+	generate
+		for (i = 0; i < DATA_BITS; i++) begin
+			wire [NUM_ADDR-1:0] data_in;
+			for (j = 0; j < NUM_ADDR; j++) begin
+				assign data_in[j] = data_out[j][i];
+			end
+			mux #( .ADDR_BITS(ADDR_BITS) ) mux_inst ( .addr(addr), .data_in(data_in), .data_out(rdata[i]) );
+		end
+	endgenerate
+`endif
+
 
 endmodule : memory

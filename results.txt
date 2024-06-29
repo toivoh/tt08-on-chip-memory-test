@@ -357,12 +357,15 @@ or3             1
 Total 705
 
 
-# dlxtp array 32 x 8 x 1
+# raw dlxtp array 32 x 8 x 1
 
 [INFO GPL-0019] Util(%): 39.08
         "timing__setup__ws": 6.977775??,
         "timing__hold__ws": 8.132548??,
 Max slew violation: 0??
+
+Warning: There are 256 unclocked register/latch pins.
+Warning: There are 272 unconstrained endpoints.
 
 dlxtp           256
 mux4            64
@@ -385,4 +388,95 @@ inv             1
 o21ba           1
 or3             1
 Total 535
+
+
+# dfxtp CG array 32 x 4 x 2
+
+[INFO GPL-0019] Util(%): 44.65
+        "timing__setup__ws": 6.295244,
+        "timing__hold__ws": 0.312018,
+Max slew violation: 0.446793
+
+dfxtp           256
+dlygate4sd3     128
+clkbuf          125
+buf             42
+and3            32
+dlclkp          32
+mux4            30
+conb            20
+diode           12
+a22o            10
+a21o            6
+o21a            5
+dlymetal6s2s    5
+and2b           4
+a21bo           4
+a221o           3
+and2            2
+nor2            2
+o22a            2
+a211o           2
+o21ba           1
+Total 723
+
+
+# dfxtp CG array 32 x 2 x 4
+
+[INFO GPL-0019] Util(%): 41.54
+        "timing__setup__ws": 6.888318,
+        "timing__hold__ws": 0.313278,
+Max slew violation: 0.235139
+
+dfxtp           256
+dlygate4sd3     192
+clkbuf          114
+buf             38
+and3            32
+dlclkp          32
+diode           23
+conb            22
+mux4            16
+o21a            4
+and2b           4
+a22o            4
+and2            3
+nor2            2
+a221o           2
+dlymetal6s2s    2
+inv             1
+a21o            1
+a211o           1
+a2111o          1
+Total 750
+
+
+# dfxtp CG array 32 x 1 x 8
+
+[INFO GPL-0019] Util(%): 40.02
+        "timing__setup__ws": 7.357293,
+        "timing__hold__ws": 0.314862,
+Max slew violation: 0.442278
+
+dfxtp           256
+dlygate4sd3     224
+clkbuf          110
+and3            32
+dlclkp          32
+diode           31
+buf             29
+conb            23
+mux4            8
+and2b           4
+dlymetal6s2s    4
+o21a            2
+and2            2
+nor2            2
+a22o            2
+o21ba           1
+a21bo           1
+a211o           1
+a221o           1
+Total 765
+
 

@@ -24,6 +24,45 @@ module rtl_array #( parameter ADDR_BITS=5, DATA_BITS=8 ) (
 endmodule
 
 
+module mux4 #( parameter LOG2_BITS_IN=5 ) (
+		input wire [1:0] addr,
+		input wire [2**LOG2_BITS_IN-1:0] data_in,
+		output wire [2**(LOG2_BITS_IN-2)-1:0] data_out
+	);
+	genvar i;
+	generate
+		for (i = 0; i < 2**(LOG2_BITS_IN-2); i++) begin
+			wire [3:0] data_in_i = data_in[4*i+3 -: 4];
+			/*(* keep = "true" *)*/ wire data_out_i;
+			//assign data_out[i] = data_in_i[addr];
+			/*(* keep = true *)*/ sky130_fd_sc_hd__mux4_1 mux4_inst(
+				.A0(data_in_i[0]), .A1(data_in_i[1]), .A2(data_in_i[2]), .A3(data_in_i[3]),
+				.S0(addr[0]), .S1(addr[1]),
+				.X(data_out_i)
+			);
+			assign data_out[i] = data_out_i;
+
+		end
+	endgenerate
+endmodule
+
+module mux #( parameter ADDR_BITS=5 ) (
+		input wire [ADDR_BITS-1:0] addr,
+		input wire [2**ADDR_BITS-1:0] data_in,
+		output wire data_out
+	);
+
+	assign data_out = data_in[addr];
+/*
+	wire [2**(ADDR_BITS-2)-1:0] data1;
+	wire [2**(ADDR_BITS-4)-1:0] data2;
+	mux4 #( .LOG2_BITS_IN(ADDR_BITS  ) ) mux4_inst1( .addr(addr[1:0]), .data_in(data_in), .data_out(data1) );
+	mux4 #( .LOG2_BITS_IN(ADDR_BITS-2) ) mux4_inst2( .addr(addr[3:2]), .data_in(data1  ), .data_out(data2) );
+	assign data_out = data2[addr[ADDR_BITS-1:4]];
+*/
+endmodule
+
+
 module rtl_vector0 #( parameter ADDR_BITS=5 ) (
 		input wire clk, reset,
 
@@ -150,8 +189,8 @@ module cg_dfxtp_vector #( parameter ADDR_BITS=5 ) (
 	endgenerate
 
 	// Mux
-
-	assign rdata = data[addr];
+	//assign rdata = data[addr];
+	mux #( .ADDR_BITS(ADDR_BITS) ) mux_inst ( .addr(addr), .data_in(data), .data_out(rdata) );
 endmodule
 
 module cg_dfxtp_sreg_vector #( parameter ADDR_BITS=4, SERIAL_BITS=2 ) (
@@ -185,8 +224,8 @@ module cg_dfxtp_sreg_vector #( parameter ADDR_BITS=4, SERIAL_BITS=2 ) (
 	endgenerate
 
 	// Mux
-
-	assign rdata = data[addr];
+	//assign rdata = data[addr];
+	mux #( .ADDR_BITS(ADDR_BITS) ) mux_inst ( .addr(addr), .data_in(data), .data_out(rdata) );
 endmodule
 
 module cg_dlxtp_vector #( parameter ADDR_BITS=5 ) (

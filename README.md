@@ -143,7 +143,31 @@ The setup and hold margin for each case should only be seen as relative figures,
 
 Summary of results
 ------------------
-Here, I try to give an overview of the results.
+Here, I try to give an overview of the results, and comment on the different categories.
+This table summarizes all the configurations that were evaluated:
+
+	Type                depth   width   length   bits   utilization   note
+
+	RTL array              32       8        1    256         66.50
+	RTL sreg array         32       4        2    256         55.72
+	RTL sreg array         32       2        4    256         47.15
+	RTL sreg array         32       1        8    256         41.99
+	RTL sreg array         16       1       16    256         38.64
+	RTL sreg array          8       1       32    256         36.59
+	RTL sreg array          2       1      128    256         35.35
+
+	dfxtp CG sreg array    32       4        2    256         44.65   compare RTL array utilization: 55.72
+	dfxtp CG sreg array    32       2        4    256         41.54   compare RTL array utilization: 47.15
+	dfxtp CG sreg array    32       1        8    256         40.02   compare RTL array utilization: 41.99
+
+	dfxtp array            32       8        1    256         65.48
+	edfxtp array           32       8        1    256         63.22
+	dfxtp + CG array       32       8        1    256         50.65   assumes that clock gates work correctly
+	n + p latch CG array   32       8        1    256         43.35   assumes that latches work correctly
+	raw p latch array      32       8        1    256         39.08   timing issues (see below!) + at least 3 cycles per write
+
+	latch FIFO              1       8       32    256         37.75   Timing issues, can only read/write every other cycle.
+	                                                                  Read must wait for entries to fall to the output.
 
 ### RTL memories
 The basic RTL memory is very simple:

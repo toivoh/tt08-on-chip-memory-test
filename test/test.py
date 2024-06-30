@@ -23,13 +23,13 @@ async def test_project(dut):
 
 	print("\nStarting memory test")
 	print(  "====================")
-	ADDR_BITS = dut.ADDR_BITS.value.to_unsigned();
-	DATA_BITS = dut.DATA_BITS.value.to_unsigned();
-	SERIAL_BITS = dut.SERIAL_BITS.value.to_unsigned();
-	PRE_POST_WRITE_DELAY = dut.PRE_POST_WRITE_DELAY.value.to_unsigned();
+	ADDR_BITS = dut.ADDR_BITS.value.integer;
+	DATA_BITS = dut.DATA_BITS.value.integer;
+	SERIAL_BITS = dut.SERIAL_BITS.value.integer;
+	PRE_POST_WRITE_DELAY = dut.PRE_POST_WRITE_DELAY.value.integer;
 	PRE_WRITE_DELAY = PRE_POST_WRITE_DELAY
 	POST_WRITE_DELAY = PRE_POST_WRITE_DELAY
-	LATCH_FIFO = (dut.LATCH_FIFO.value.to_unsigned() != 0);
+	LATCH_FIFO = (dut.LATCH_FIFO.value.integer != 0);
 
 	if LATCH_FIFO: POST_WRITE_DELAY = 1
 
@@ -83,7 +83,7 @@ async def test_project(dut):
 
 			await ClockCycles(dut.clk, 1)
 
-			rdata = dut.uo_out.value.to_unsigned()
+			rdata = dut.uo_out.value.integer
 			#print((rdata, data[addr][i]))
 			#assert rdata == data[addr][i]
 

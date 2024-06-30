@@ -23,10 +23,10 @@ async def test_project(dut):
 
 	print("\nStarting memory test")
 	print(  "====================")
-	ADDR_BITS = dut.ADDR_BITS.value.integer;
-	DATA_BITS = dut.DATA_BITS.value.integer;
-	SERIAL_BITS = dut.SERIAL_BITS.value.integer;
-	PRE_POST_WRITE_DELAY = dut.PRE_POST_WRITE_DELAY.value.integer;
+	ADDR_BITS = int(dut.ADDR_BITS.value.integer)
+	DATA_BITS = int(dut.DATA_BITS.value.integer)
+	SERIAL_BITS = int(dut.SERIAL_BITS.value.integer)
+	PRE_POST_WRITE_DELAY = int(dut.PRE_POST_WRITE_DELAY.value.integer)
 	PRE_WRITE_DELAY = PRE_POST_WRITE_DELAY
 	POST_WRITE_DELAY = PRE_POST_WRITE_DELAY
 	LATCH_FIFO = (dut.LATCH_FIFO.value.integer != 0);

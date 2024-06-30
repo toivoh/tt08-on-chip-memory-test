@@ -5,8 +5,8 @@
         "timing__hold__ws": 0.405322,
 Max slew violation: 0.096664
 
-mux2            256
 dfxtp           256
+mux2            256
 dlygate4sd3     256
 mux4            64
 clkbuf          58

@@ -49,7 +49,8 @@ endmodule
 module memory #( parameter ADDR_BITS = `ADDR_BITS, DATA_BITS = `DATA_BITS, SERIAL_BITS = `SERIAL_BITS ) (
 		input wire clk,
 
-		input wire we, shift_enable,
+		input wire we,                    // write enable: write when high
+		input shift_enable,               // shift without writing when high, used only for clock gated shift register memories
 		input wire [ADDR_BITS-1:0] addr,
 		input wire [DATA_BITS-1:0] wdata,
 		output wire [DATA_BITS-1:0] rdata
@@ -76,8 +77,7 @@ module memory #( parameter ADDR_BITS = `ADDR_BITS, DATA_BITS = `DATA_BITS, SERIA
 `ifdef TOP_RTL_SREG_ARRAY
 
 	wire [DATA_BITS-1:0] data_out[NUM_ADDR];
-	//wire [DATA_BITS-1:0] all_data[NUM_ADDR][SERIAL_BITS];
-	wire [DATA_BITS-1:0] all_data[NUM_ADDR*SERIAL_BITS];
+	wire [DATA_BITS-1:0] all_data[NUM_ADDR*SERIAL_BITS]; // for debugging
 
 	assign rdata = data_out[addr];
 	generate
@@ -129,7 +129,7 @@ module memory #( parameter ADDR_BITS = `ADDR_BITS, DATA_BITS = `DATA_BITS, SERIA
 	// ------------
 	wire [DATA_BITS-1:0] data[NUM_ADDR];
 
-	wire [DATA_BITS-1:0] all_data[NUM_ADDR];
+	wire [DATA_BITS-1:0] all_data[NUM_ADDR]; // for debugging
 
 	generate
 `ifdef ELEMENT_DLXTNP_CG
@@ -206,7 +206,7 @@ module memory #( parameter ADDR_BITS = `ADDR_BITS, DATA_BITS = `DATA_BITS, SERIA
 	// Memory array
 	// ------------
 	wire [DATA_BITS-1:0] data_out[NUM_ADDR];
-	wire [DATA_BITS-1:0] all_data[NUM_ADDR*SERIAL_BITS];
+	wire [DATA_BITS-1:0] all_data[NUM_ADDR*SERIAL_BITS]; // for debugging
 
 	generate
 		for (j = 0; j < NUM_ADDR; j++) begin

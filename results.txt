@@ -480,3 +480,25 @@ a221o           1
 Total 765
 
 
+# latch fifo 1 x 8 x 32
+
+[INFO GPL-0019] Util(%): 37.75
+        "timing__setup__ws": 12.794883??,
+        "timing__hold__ws": 0.120824??,
+Max slew violation: ??
+
+Warning: There are 280 unconstrained endpoints.
+Warning: There are 256 unclocked register/latch pins.
+
+dlxtp           256
+dfxtp           64
+dlygate4sd3     59
+inv             32
+and3b           32
+a31o            32
+clkbuf          25
+buf             18
+conb            16
+dlymetal6s2s    2
+Total 536
+

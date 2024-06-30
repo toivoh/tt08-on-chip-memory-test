@@ -18,6 +18,8 @@ module tt_um_toivoh_on_chip_memory_test #( parameter ADDR_BITS = `ADDR_BITS, DAT
 	);
 
 	wire [DATA_BITS-1:0] rdata;
+
+`ifndef TOP_LATCH_FIFO
 	memory mem(
 		.clk(clk),
 		.we(ui_in[7]),
@@ -26,6 +28,15 @@ module tt_um_toivoh_on_chip_memory_test #( parameter ADDR_BITS = `ADDR_BITS, DAT
 		.wdata(uio_in[DATA_BITS-1:0]),
 		.rdata(rdata)
 	);
+`else
+	SRFIFO_latched #( .DEPTH(SERIAL_BITS), .BITS(DATA_BITS) ) fifo(
+		.clk(clk), .reset(!rst_n),
+		.add(ui_in[7]),
+		.remove(ui_in[6]),
+		.new_entry(uio_in[DATA_BITS-1:0]),
+		.last_entry(rdata)
+	);
+`endif
 
 	assign uo_out = { {(8-DATA_BITS){1'b0}}, rdata };
 

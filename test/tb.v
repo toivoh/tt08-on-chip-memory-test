@@ -54,6 +54,12 @@ module tb ();
 	localparam PRE_POST_WRITE_DELAY = 0;
 `endif
 
+`ifdef TOP_LATCH_FIFO
+	localparam LATCH_FIFO = 1;
+`else
+	localparam LATCH_FIFO = 0;
+`endif
+
 /*
 	// For debugging
 	wire [`DATA_BITS-1:0] data0 = user_project.mem.all_data[0];

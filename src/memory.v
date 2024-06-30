@@ -238,5 +238,126 @@ module memory #( parameter ADDR_BITS = `ADDR_BITS, DATA_BITS = `DATA_BITS, SERIA
 	endgenerate
 `endif
 
-
 endmodule : memory
+
+
+/*
+Latch based register
+*/
+module latch_register #( parameter BITS=16 ) (
+		input wire clk, reset,
+
+		input wire [BITS-1:0] in,
+		output wire [BITS-1:0] out,
+
+		input wire we, // Initiate write, in must be stable between next cycle and the one after.
+		output wire sampling_in, // When high, in must not be changed during the next cycle.
+//		output wire in_sampled, // When high, in can be changed next cycle. Doesn't go high until we goes low.
+		input wire invalidate,
+		output wire out_valid // out is valid. Goes high after writing, low after invalidate.
+	);
+
+	genvar i;
+
+	(* keep = "true" *) reg we_reg;
+//	reg in_sampled_reg;
+	reg valid_reg;
+
+	always @(posedge clk) begin
+		if (reset) begin
+			we_reg <= 0;
+//			in_sampled_reg <= 0;
+			valid_reg <= 0;
+		end else begin
+			we_reg <= we;
+//			in_sampled_reg <= we_reg && !we;
+			valid_reg <= (valid_reg && !invalidate) || we;
+		end
+	end
+
+`ifdef TEST_LATE_OPEN_LATCHES
+	// Assume that the gate stays open an additional cycle
+	reg late_we_reg;
+	wire gate = we_reg || late_we_reg;
+
+	// Model the latch with a flipflop and a mux
+	reg [BITS-1:0] value;
+	assign out = gate ? in : value;
+
+	always @(posedge clk) begin
+		if (reset) late_we_reg <= 0;
+		else late_we_reg <= we_reg;
+
+		if (gate) value <= in;
+	end
+`else
+	wire gate = we_reg;
+`ifdef SIM
+	// Infer latches
+	reg [BITS-1:0] out_latch;
+	always @(*) if (gate) out_latch <= in;
+	assign out = out_latch;
+`else
+	generate
+		for (i = 0; i < BITS; i++) begin
+			(* keep = "true" *) sky130_fd_sc_hd__dlxtp_1 latch(
+				.D(in[i]), .GATE(gate), .Q(out[i])
+			);
+		end
+	endgenerate
+`endif
+`endif
+
+	assign sampling_in = we_reg;
+//	assign in_sampled = in_sampled_reg;
+	assign out_valid = valid_reg;
+endmodule : latch_register
+
+
+/*
+Shift register based FIFO using latches.
+Entries start at the top (depth=0) and fall to the bottom if there is no valid entry at the next depth.
+Has a latency of at least DEPTH, but should be more area efficient.
+new_entry must be stable between the cycle after add is raised and the next cycle.
+*/
+module SRFIFO_latched #( parameter DEPTH=32, BITS=8 ) (
+		input wire clk, reset,
+
+		input wire add, remove, // only add when can_add is high, only remove when last_valid is
+		input wire [BITS-1:0] new_entry, // new_entry must be stable between the cycle after add is raised and the next cycle.
+		output wire new_entry_sampled, // when high, new_entry can be changed next cycle
+		output wire [BITS-1:0] last_entry,
+		output wire can_add, last_valid
+	);
+
+	genvar i;
+
+	wire [BITS-1:0] data[DEPTH+1];
+	assign data[0] = new_entry;
+	assign last_entry = data[DEPTH];
+
+	wire [DEPTH:0] valid; // 1 .. DEPTH are for the latch registers
+	assign valid[0] = add;
+	assign can_add = !valid[1];
+	assign last_valid = valid[DEPTH];
+
+	wire [DEPTH:0] sampling_in; // 0 .. DEPTH - 1 are the latch registers
+	assign sampling_in[DEPTH] = remove;
+
+	// Transfer if the current position is valid and the next one is free
+	wire [DEPTH-1:0] we = valid[DEPTH-1:0] & ~valid[DEPTH:1];
+	// Invalidate when the next register reads ==> can update one cycle after the read.
+	wire [DEPTH-1:0] invalidate = sampling_in[DEPTH:1];
+	assign new_entry_sampled = sampling_in[0];
+
+	generate
+		for (i = 0; i < DEPTH; i++) begin
+			latch_register #(.BITS(BITS)) register(
+				.clk(clk), .reset(reset),
+				.in(data[i]), .out(data[i+1]),
+				.we(we[i]), .sampling_in(sampling_in[i]),
+				.invalidate(invalidate[i]), .out_valid(valid[i+1])
+			);
+		end
+	endgenerate
+endmodule : SRFIFO_latched

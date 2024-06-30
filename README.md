@@ -1,4 +1,4 @@
-![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg)
+![](../../workflows/gds/badge.svg) ![](../../workflows/test/badge.svg)
 
 tt08-on-chip-memory-test: Trying different forms of on-chip memory with sky130 / OpenLane2
 ==========================================================================================
@@ -77,9 +77,10 @@ The interface to the `memory` module contains the signals
 The same address is used for both reading and writing.
 
 ### Top level types
-There are four top level types:
+There are five top level types:
 - Two RTL memories, with/without shift register support.
 - Two customized memories, with/without shift register support.
+- Latch-based FIFO
 
 The RTL memories serve as a baseline, trying to implement the memory in rather straightforward RTL code, without instantiating any sky130 specific cells.
 The customized memories break the memory into a few component parts, which allow them instantiate specific sky130 cells for different purposes, including use as memory elements.
@@ -241,3 +242,35 @@ Due to the clock gating, a shift register is only shifted when the address match
 The utilization for the corresponding RTL array is listed for each configuration. The overhead is clearly smaller in this case especially for short serial lengths, but at length = 8, the two are already quite close, and it is assumed that the results for longer serial lengths are more or less the same, coming down to 35% utilization or less for length = 128.
 
 Comparing with the `n + p latch CG array` 32 x 8 x 1 memory, it seems that the `dfxtp CG sreg array` 32 x 2 x 4 memory is slightly smaller, assuming that the serial access is ok, and some further gains can be had if longer serial lengths are acceptable.
+
+### Latch based FIFO
+It is possible to connect latches into a FIFO however, using a fall-through structure where valid entries enter at top (address 0, the input) and fall to the bottom (the output). This implementation is taken from https://github.com/toivoh/tt07-basilisc-2816-cpu-experimental, where it is used as a prefetch queue.
+
+	Type                depth   width   length   bits   utilization   note
+
+	latch FIFO              1       8       32    256         37.75   Timing issues, can only read/write every other cycle.
+	                                                                  Read must wait for entries to fall to the output.
+
+Just like in the `raw p latch array` case, the STA gets confused:
+
+	Warning: There are 256 unclocked register/latch pins.
+	...
+	Warning: There are 280 unconstrained endpoints.
+	...
+
+The FIFO can only accept a write every other cycle, and produce a new output every other cycle. Entries fall through the FIFO at one step per cycle when there is empty space below them.
+The utilization is quite low despite the fact that the FIFO includes 64 flip flops on top of the 256 latches:
+
+	dlxtp           256
+	dfxtp           64
+	dlygate4sd3     59
+	inv             32
+	and3b           32
+	a31o            32
+	clkbuf          25
+	buf             18
+	conb            16
+	dlymetal6s2s    2
+	Total 536
+
+32 flip flops are needed to keep track of which entries are valid. 32 more are used to make sure that the data input to each latch is kept stable one cycle after the gate has gone low. A 16 bit wide FIFO could amortize each flip flops over twice as many latches.

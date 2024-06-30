@@ -4,8 +4,8 @@
  */
 
 `define ADDR_BITS 5
-`define DATA_BITS 8
-`define SERIAL_BITS 1
+`define DATA_BITS 1
+`define SERIAL_BITS 8
 
 
 // Choose top memory structure
@@ -13,8 +13,8 @@
 
 //`define TOP_RTL_ARRAY       	// not valid when SERIAL_BITS != 1
 //`define TOP_ARRAY           	// not valid when SERIAL_BITS != 1
-//`define TOP_RTL_SREG_ARRAY
-`define TOP_SREG_ARRAY      	// always clock gated dfxtp
+`define TOP_RTL_SREG_ARRAY
+//`define TOP_SREG_ARRAY      	// always clock gated dfxtp
 
 
 // Choose memory element for TOP_RTL_SREG_ARRAY

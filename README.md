@@ -166,6 +166,7 @@ This table summarizes all the configurations that were evaluated:
 	edfxtp array           32       8        1    256         63.22
 	dfxtp + CG array       32       8        1    256         50.65   assumes that clock gates work correctly
 	n + p latch CG array   32       8        1    256         43.35   assumes that latches work correctly
+	"n" latch CG array     32       8        1    256         42.50   assumes that latches work correctly, low setup slack
 	raw p latch array      32       8        1    256         39.08   timing issues (see below!) + at least 3 cycles per write
 
 	latch FIFO              1       8       32    256         37.75   Timing issues, can only read/write every other cycle.

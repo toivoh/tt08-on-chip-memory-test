@@ -109,18 +109,25 @@ module memory #( parameter ADDR_BITS = `ADDR_BITS, DATA_BITS = `DATA_BITS, SERIA
 	// Demux
 	// -----
 	wire [NUM_ADDR-1:0] data_we;
-	wire [NUM_ADDR-1:0] gclk;
+	wire [NUM_ADDR-1:0] gclk, gnclk;
+
+	wire nclk = !clk;
 	generate
 		for (j = 0; j < NUM_ADDR; j++) begin
 			assign data_we[j] = (addr == j) && we;
 
 			`ifndef BUFFER_CLOCK_GATE
-			sky130_fd_sc_hd__dlclkp_1 clock_gate( .CLK(clk), .GATE(data_we[j]), .GCLK(gclk[j]) );
+			sky130_fd_sc_hd__dlclkp_1 clock_gate(   .CLK(clk),  .GATE(data_we[j]), .GCLK(gclk[j]) );
+			sky130_fd_sc_hd__dlclkp_1 clock_gate_n( .CLK(nclk), .GATE(data_we[j]), .GCLK(gnclk[j]) );
 			`else
 			// Reduces the number of clock buffers, but still seems to increase the utilization:
 			wire _gclk;
 			sky130_fd_sc_hd__dlclkp_1 clock_gate( .CLK(clk), .GATE(data_we[j]), .GCLK(_gclk) );
 			sky130_fd_sc_hd__clkbuf_4 clock_buffer( .A(_gclk), .X(gclk[j]) );
+
+			wire _gnclk;
+			sky130_fd_sc_hd__dlclkp_1 clock_gate_n( .CLK(nclk), .GATE(data_we[j]), .GCLK(_gnclk) );
+			sky130_fd_sc_hd__clkbuf_4 clock_buffer_n( .A(_gnclk), .X(gnclk[j]) );
 			`endif
 		end
 	endgenerate
@@ -152,6 +159,10 @@ module memory #( parameter ADDR_BITS = `ADDR_BITS, DATA_BITS = `DATA_BITS, SERIA
 `endif
 `ifdef ELEMENT_DLXTNP_CG
 				sky130_fd_sc_hd__dlxtp_1 p_latch(.GATE(gclk[j]), .D(wdata2[i]), .Q(data[j][i]));
+`endif
+`ifdef ELEMENT_DLXTN_CG
+				// dlxtp fed with inverted clock acts like a dlxtn latch
+				sky130_fd_sc_hd__dlxtp_1 p_latch(.GATE(gnclk[j]), .D(wdata[i]), .Q(data[j][i]));
 `endif
 `ifdef ELEMENT_DLXTP
 				sky130_fd_sc_hd__dlxtp_1 p_latch(.GATE(data_we[j]), .D(wdata[i]), .Q(data[j][i]));

@@ -136,6 +136,8 @@ This is my understanding of the cell counts above:
 I assume that most of the random logic is used in the demultiplexer and the multiplexer.
 We can see that there is some overhead here, which leaves room for improvement.
 
+One thing to note is that most cells have a number of versions with different drive strength, e g, `dfxtp_1`, `dfxtp_2`, `dfxtp_4`, etc, where higher drive strengths consume more are. The cell counts listed in `results.txt` don't distinguish between different versions of the same cell, so they can't tell the whole story about why one configuration needs more utilization than another.
+
 Results
 -------
 The full results are collected in `results.txt`, including utilization, timing information, and cell counts for each tested configuration.
@@ -224,6 +226,7 @@ Now, let us try some different memory elements for a 32 x 8 x 1 memory: (customi
 	edfxtp array           32       8        1    256         63.22
 	dfxtp + CG array       32       8        1    256         50.65   assumes that clock gates work correctly
 	n + p latch CG array   32       8        1    256         43.35   assumes that latches work correctly
+	"n" latch CG array     32       8        1    256         42.50   assumes that latches work correctly, low setup slack
 	raw p latch array      32       8        1    256         39.08   timing issues (see below!) + at least 3 cycles per write
 
 The `dfxtp` case uses the same flip flop as in the RTL array, and should come close, which it does.
@@ -239,7 +242,9 @@ The option `BUFFER_CLOCK_GATE` in `common.vh` can be used to insert an explicit 
 To use clock gating, we must assume that OpenLane 2 handles the `dlclkp` clock gate cell correctly.
 For the next two memory types, we must also assume that it handles latches correctly.
 
-The next memory type `n + p latch CG array` uses an array of `dlxtp` positive latches, where the gate of the latch is fed using a clock gate just as in the previous case. A normal `dfxtp` flip flop is nominally composed of a `dlxtn` negative latch followed by a `dlxtp` positive latch, and this memory uses one shared negative latch per bit to feed the memory array of positive latches. This seems to make the STA happy, and ideally, this configuration should support one write per clock cycle just like the previous ones, as long as OpenLane 2 gets the setup and hold timing correct (I think). The negative latches seem to add some more overhead than expected compared to the next memory type, however.
+The next memory type `n + p latch CG array` uses an array of `dlxtp` positive latches, where the gate of the latch is fed using a clock gate just as in the previous case. A normal `dfxtp` flip flop is nominally composed of a `dlxtn` negative latch followed by a `dlxtp` positive latch, and this memory uses one shared negative latch per bit to feed the memory array of positive latches. This seems to make the STA happy, and ideally, this configuration should support one write per clock cycle just like the previous ones, as long as OpenLane 2 gets the setup and hold timing correct (I think). This configuration seems to have some overhead compared to the next memory type, however, and even more compared to the "raw p latch array".
+
+The `"n" latch CG array` is a variation on the previous memory type. The idea was to clock gate `dlxtn` negative latches directly, but there is no clock gate cell that fits with them. Instead, `dlxtp` latches are used, fed with an inverted clock signal; this seems to behave pretty much the same way as far as the STA is concerned, and the inverted clock is gated in a similar way to previous cases. One thing to note is that the negative latches sample the incoming data value at the negative clock edge, half a cycle before when the previous cases did. This leaves only half a cycle for the multiplexer, but on the other hand, writes propagate through the RAM one cycle faster. I got a negative setup slack in the worst corner for this case (-0.11 ns, compared to 5.52 ns for the previous case), but that includes 4 ns of output delay. If the output would be fed to a flip flop instead, it would meet timing at 50 MHz.
 
 The `raw p latch array` memory type dispenses with both clock gating and negative latches.
 Removing just the negative latches makes OpenLane 2 abort, complaining about setup violations in all corners (the setup slack is exactly zero). There is probably a way to avoid this problem, but I don't know how.

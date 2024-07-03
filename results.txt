@@ -357,6 +357,37 @@ or3             1
 Total 705
 
 
+# dlxtn (=dlxtp(!clk)) CG array 32 x 8 x 1
+
+[INFO GPL-0019] Util(%): 42.50
+        "timing__setup__ws": -0.117687,
+        "timing__hold__ws": 2.877236,
+Max slew violation: 0.423026
+
+dlxtp           256
+clkbuf          147
+mux4            64
+buf             54
+inv             33
+and3            32
+dlclkp          32
+diode           31
+a22o            16
+conb            16
+a221o           12
+and2            6
+o21a            6
+a21o            5
+and2b           4
+dlymetal6s2s    4
+or2             3
+nor2            2
+or3             2
+o22a            2
+a211o           1
+Total 728
+
+
 # raw dlxtp array 32 x 8 x 1
 
 [INFO GPL-0019] Util(%): 39.08
